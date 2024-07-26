@@ -178,7 +178,7 @@ ipython_config.py
 # poetry
 poetry.toml
 # Uncomment if needed
-#poetry.lock
+poetry.lock
 
 # pdm
 # Uncomment if needed
@@ -237,7 +237,7 @@ cython_debug/
 
 # PyCharm specific template is maintained in a separate JetBrains.gitignore
 # Uncomment if needed
-#.idea/
+.idea/
 
 ### Python Patch ###
 poetry.toml
