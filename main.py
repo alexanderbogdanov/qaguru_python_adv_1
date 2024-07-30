@@ -1,4 +1,5 @@
 import json
+import logging
 from http import HTTPStatus
 
 import uvicorn
@@ -11,11 +12,14 @@ app = FastAPI()
 # users: list[User]
 users: list[User] = []
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 
 @app.get("/api/users/{user_id}", status_code=HTTPStatus.OK)
 def get_user(user_id: int) -> User:
     if user_id < 1 or user_id > len(users):
-        return HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="User not found")
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="User not found")
     return users[user_id - 1]
 
 
@@ -26,13 +30,13 @@ def get_users() -> list[User]:
 
 if __name__ == "__main__":
     with open("users.json") as file:
-        # users = json.load(file)
         users_data = json.load(file)
-    # for user in users:
-    #     User.model_validate(user)
     for user_data in users_data:
-        validated_user = User.model_validate(user_data)  # Validate and transform
-        users.append(validated_user)
+        try:
+            validated_user = User.model_validate(user_data)  # Validate and transform
+            users.append(validated_user)
+        except Exception as e:
+            logger.error(f"Validation error for user data: {user_data}, error: {e}")
 
-    print("Users loaded successfully")
+    logger.info("Users loaded successfully")
     uvicorn.run(app, host="localhost", port=8002)
