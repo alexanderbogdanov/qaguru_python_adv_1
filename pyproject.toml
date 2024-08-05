@@ -11,11 +11,12 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.12"
 pytest = "^8.3.2"
-fastapi = "^0.111.1"
+fastapi = "^0.112.0"
 pydantic = "^2.8.2"
 fastapi-pagination = "^0.12.26"
 email-validator = "^2.2.0"
 python-dotenv = "^1.0.1"
+uvicorn = "^0.30.5"
 
 
 [build-system]
