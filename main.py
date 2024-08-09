@@ -7,7 +7,9 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi_pagination import Params, Page, paginate, add_pagination
 from contextlib import asynccontextmanager
 
+from models.AppStatus import AppStatus
 from models.User import User
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,29 +19,35 @@ async def lifespan(app: FastAPI):
 
     for user_data in users_data:
         try:
-            validated_user = User.model_validate(user_data)  # Validate and transform
+            validated_user = User.model_validate(user_data)
             users.append(validated_user)
         except Exception as e:
             logger.error(f"Validation error for user data: {user_data}, error: {e}")
 
     logger.info("Users loaded successfully")
-    logger.info(f"Total users loaded: {len(users)}")  # Log the total number of users loaded
+    logger.info(f"Total users loaded: {len(users)}")
     yield
-    # Shutdown event (if needed)
+
 
 app = FastAPI(lifespan=lifespan)
 
-# Initialize an empty list to store users
 users: list[User] = []
 
-# Configure the logger
+
+@app.get("/api/status", response_model=AppStatus, status_code=HTTPStatus.OK)
+def status():
+    return AppStatus(users=bool(users))
+
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
 @app.get("/api/users/{user_id}", status_code=HTTPStatus.OK)
 def get_user(user_id: int) -> User:
-    if user_id < 1 or user_id > len(users):
+    if user_id < 1:
+        raise HTTPException(status_code=HTTPStatus.UNPROCESSABLE_ENTITY, detail="Invalid user ID")
+    if user_id > len(users):
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="User not found")
     return users[user_id - 1]
 
