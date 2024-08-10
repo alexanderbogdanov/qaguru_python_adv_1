@@ -4,6 +4,7 @@ import requests
 from email_validator import validate_email, EmailNotValidError
 from pydantic import HttpUrl, ValidationError
 from models.User import User
+from models.PaginatedResponse import PaginatedResponse
 
 
 @pytest.fixture
@@ -91,6 +92,52 @@ class TestPagination:
         response = requests.get(f"{app_url}/api/users/?page={page}&size={size}")
         assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
+    def test_pagination_data_differs_with_page(self, app_url):
+        response_page_1 = requests.get(f"{app_url}/api/users/?page=1&size=5")
+        response_page_2 = requests.get(f"{app_url}/api/users/?page=2&size=5")
+
+        assert response_page_1.status_code == HTTPStatus.OK
+        assert response_page_2.status_code == HTTPStatus.OK
+
+        data_page_1 = response_page_1.json()["items"]
+        data_page_2 = response_page_2.json()["items"]
+
+        assert data_page_1 != data_page_2, "Data on page 1 should differ from data on page 2"
+
+    def test_pagination_response_model_validation(self, app_url):
+        response = requests.get(f"{app_url}/api/users/?page=1&size=5")
+        assert response.status_code == HTTPStatus.OK
+
+        paginated_data = response.json()
+        validated_data = PaginatedResponse(**paginated_data)
+
+        for user in validated_data.items:
+            User.model_validate(user)
+
+    def test_pagination_out_of_bounds(self, app_url):
+        response = requests.get(f"{app_url}/api/users/?page=1000&size=5")
+        assert response.status_code == HTTPStatus.OK
+
+        paginated_data = response.json()
+        assert paginated_data["items"] == [], "Items should be empty for out of bounds pages"
+
+    def test_pagination_exceeding_page_size_limit(self, app_url):
+        response = requests.get(f"{app_url}/api/users/?page=1&size=150")  # Assuming max allowed size is 100
+        assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
+    def test_pagination_data_differs_with_size(self, app_url):
+        response_size_5 = requests.get(f"{app_url}/api/users/?page=1&size=5")
+        response_size_10 = requests.get(f"{app_url}/api/users/?page=1&size=10")
+
+        assert response_size_5.status_code == HTTPStatus.OK
+        assert response_size_10.status_code == HTTPStatus.OK
+
+        data_size_5 = response_size_5.json()["items"]
+        data_size_10 = response_size_10.json()["items"]
+
+        assert len(data_size_5) == 5, "Expected 5 items on page size 5"
+        assert len(data_size_10) == 10, "Expected 10 items on page size 10"
+
 class TestResponseValidation:
     def test_response_model(self, users):
         items = users["items"]
@@ -137,4 +184,3 @@ class TestResponseValidation:
                 User.model_validate(user)
             except ValidationError as e:
                 pytest.fail(f"Invalid avatar URL: {user['avatar']} - {e}")
-
