@@ -5,6 +5,7 @@ from email_validator import validate_email, EmailNotValidError
 from pydantic import HttpUrl, ValidationError
 from models.User import User
 from models.PaginatedResponse import PaginatedResponse
+from conftest import fetch_response
 
 
 @pytest.fixture

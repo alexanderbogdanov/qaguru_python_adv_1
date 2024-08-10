@@ -8,6 +8,7 @@ def is_port_in_use(port: int) -> bool:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(("localhost", port)) == 0
 
+
 class TestServiceStatus:
 
     def test_port_in_use(self):
@@ -32,5 +33,3 @@ class TestServiceStatus:
     def test_get_user_not_found(self, app_url):
         response = requests.get(f"{app_url}/api/users/999")
         assert response.status_code == HTTPStatus.NOT_FOUND
-
-
