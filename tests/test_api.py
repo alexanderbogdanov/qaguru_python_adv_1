@@ -30,7 +30,7 @@ class TestUsersEndpoint:
         users = paginated_response["items"]
         for user in users:
             try:
-                validated_user = User(**user)  # Instantiation-based validation
+                validated_user = User(**user)
             except ValidationError as e:
                 pytest.fail(f"User data validation failed for user: {user}. Error: {e}")
 
