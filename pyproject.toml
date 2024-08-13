@@ -18,6 +18,9 @@ email-validator = "^2.2.0"
 python-dotenv = "^1.0.1"
 uvicorn = "^0.30.5"
 requests = "^2.32.3"
+sqlalchemy = "^2.0.32"
+psycopg2-binary = "^2.9.9"
+sqlmodel = "^0.0.21"
 
 
 [build-system]
