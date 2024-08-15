@@ -3,8 +3,8 @@ import pytest
 import requests
 from email_validator import validate_email, EmailNotValidError
 from pydantic import ValidationError
-from models.User import User
-from models.PaginatedResponse import PaginatedResponse
+from app.models.User import User
+from app.models.PaginatedResponse import PaginatedResponse
 
 
 @pytest.fixture

@@ -4,8 +4,8 @@ import os
 
 import pytest
 import requests
-from models.AppStatus import AppStatus
-from models.User import User
+from app.models.AppStatus import AppStatus
+from app.models.User import User
 from pydantic import ValidationError
 
 
