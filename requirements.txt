@@ -1,0 +1,14 @@
+
+pytest
+fastapi
+pydantic
+fastapi-pagination
+email-validator
+python-dotenv
+uvicorn
+requests
+sqlalchemy
+psycopg2-binary
+sqlmodel
+
+
