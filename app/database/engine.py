@@ -1,6 +1,7 @@
 import os
 
-from sqlmodel import create_engine, SQLModel
+from sqlalchemy.orm import Session
+from sqlmodel import create_engine, SQLModel, text
 
 engine = create_engine(
     os.getenv("DATABASE_ENGINE"),
@@ -10,3 +11,13 @@ engine = create_engine(
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
+
+
+def check_if_db_available() -> bool:
+    try:
+        with Session(engine) as session:
+            session.execute(text("SELECT 1"))
+            return True
+    except Exception as e:
+        print(e)
+        return False
