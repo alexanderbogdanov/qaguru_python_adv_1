@@ -48,3 +48,6 @@ class TestServiceStatus:
         assert response.status_code == HTTPStatus.NOT_FOUND, f"Expected status {HTTPStatus.NOT_FOUND} for non-existent user, but got {response.status_code}"
         assert response.json() == {
             "detail": "User not found"}, f"Expected response {{'detail': 'User not found'}}, but got {response.json()}"
+
+
+

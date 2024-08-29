@@ -19,5 +19,5 @@ def check_if_db_available() -> bool:
             session.execute(text("SELECT 1"))
             return True
     except Exception as e:
-        print(e)
+        print(f"Database connection error: {e}")
         return False

@@ -1,4 +1,4 @@
-from typing import Iterable, Type
+from typing import Iterable, Type, List, Optional
 
 from fastapi import HTTPException
 

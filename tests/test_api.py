@@ -8,6 +8,11 @@ from app.models.PaginatedResponse import PaginatedResponse
 
 
 @pytest.fixture
+def fill_test_data(app_url):
+    pass
+
+
+@pytest.fixture
 def users(app_url):
     response = requests.get(f"{app_url}/api/users/")
     assert response.status_code == HTTPStatus.OK, f"Expected status {HTTPStatus.OK}, but got {response.status_code}"
@@ -213,3 +218,6 @@ class TestResponseValidation:
                 validated_user = User(**user)
             except ValidationError as e:
                 pytest.fail(f"Invalid avatar URL for user {user['id']}: {user['avatar']} - {e}")
+
+
+
