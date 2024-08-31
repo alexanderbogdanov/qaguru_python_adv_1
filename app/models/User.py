@@ -7,17 +7,17 @@ class User(SQLModel, table=True):
     email: EmailStr = Field(index=True, unique=True)
     first_name: str
     last_name: str
-    avatar: HttpUrl  # will change later to HttpUrl
+    avatar: str  # will change later to HttpUrl
 
 
-class UserCreate(SQLModel):  # let's see if it works with SQLModel
+class UserCreate(BaseModel):  # let's see if it works with SQLModel
     mail: EmailStr
     first_name: str
     last_name: str
     avatar: HttpUrl
 
 
-class UserUpdate(SQLModel):  # let's see if it works with SQLModel
+class UserUpdate(BaseModel):  # let's see if it works with SQLModel
     email: EmailStr | None = None
     first_name: str | None = None
     last_name: str | None = None

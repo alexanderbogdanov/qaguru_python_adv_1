@@ -21,3 +21,7 @@ def check_if_db_available() -> bool:
     except Exception as e:
         print(f"Database connection error: {e}")
         return False
+
+def get_session() -> Session:
+    with Session(engine) as session:
+        yield session
